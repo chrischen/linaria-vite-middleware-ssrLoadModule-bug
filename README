@@ -1,0 +1,13 @@
+This is a demo repo to reproduce a bug with Linaria vite plugin and Vite middleware that calls ssrLoadModule in the request handler.
+
+Calling ssrLoadModule in the request handler seems to break hot module reloading for Linaria.
+
+- Step 1) Start server with `npm run dev`
+- Step 2) Open the server in the browser and reload the page one time
+- Step 3) Save Home.jsx without any changes to trigger HMR.
+- Step 4) This should cause HMR to remove the Linaria CSS for some reason.
+  Editing the Linaria css code to change the styles adds the CSS back.
+
+It seems when the page is reloaded and the request handler calls ssrLoadModule on the server for a second time it causes the HMR issue to happen. If the page is never reloaded, and the request handler is only ever called one time, then HMR works as expected.
+Moving the ssrLoadModule call outside of the request handler also fixes the issue.
+
